@@ -5,7 +5,7 @@ const TopicsPage = () => {
 
   useEffect(() => {
     // Fetch topics from the backend
-    fetch('http://backend:5000/api/topics')
+    fetch(`http://${import.meta.env.BACKEND_URL || 'localhost:5000'}/api/topics`)
       .then(resp => resp.json())
       .then((data) => {
         setTopics(data);

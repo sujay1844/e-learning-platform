@@ -2,7 +2,24 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
-console.log('Starting server...');
+const OpenAI = require('openai');
+
+const SystemPrompt = `
+You're a knowledgeable tutor specialized in various subjects.
+Respond to user inquiries with comprehensive and accurate information related to their academic queries.
+Be concise and informative to assist them effectively in their studies.
+`;
+const defaultTopics = [
+	{ name: "Physics", url: "https://www.youtube.com/embed/8dRPzktsaU8?si=uwrt8XpqktDhOTgD"},
+	{ name: "Chemistry", url: "https://www.youtube.com/embed/LpsYlYM-o0Y?si=_SnEy2oh-4g-yHbg"},
+	{ name: "Biology", url: "https://www.youtube.com/embed/CbZLcwuQJdA?si=PgYv9YJtvJPankpe"},
+	{ name: "Maths", url: "https://www.youtube.com/embed/jD2InfX_96I?si=NtHBEMM_5ITTeQV3"},
+];
+
+const openai = new OpenAI({
+    apiKey: `${process.env.OPENAI_API_KEY}`,
+});
+
 // Connect to the MongoDB database
 mongoose.connect(
   process.env.MONGO_URI || 'mongodb://0.0.0.0:27017/topicsDB',
@@ -14,26 +31,6 @@ const topicSchema = new mongoose.Schema({
   url: String
 });
 const Topic = mongoose.model('Topic', topicSchema);
-
-// Function to initialize data in MongoDB
-const initializeData = async () => {
-  try {
-    const count = await Topic.countDocuments();
-    if (count === 0) {
-      console.log('No topics found, adding default topics...');
-      await Topic.create([
-        { name: "Science", url: "https://www.youtube.com/embed/-PVLHNUu0vg?si=0hNp5rbNkUuC2lv8"},
-        { name: "Technology", url: "https://www.youtube.com/embed/-PVLHNUu0vg?si=0hNp5rbNkUuC2lv8"},
-        { name: "Mathematics", url: "https://www.youtube.com/embed/-PVLHNUu0vg?si=0hNp5rbNkUuC2lv8"},
-        { name: "Arts", url: "https://www.youtube.com/embed/-PVLHNUu0vg?si=0hNp5rbNkUuC2lv8"},
-        // Add more topics as needed
-      ]);
-    }
-  } catch (error) {
-    console.error('Error initializing data:', error);
-  }
-};
-initializeData();
 
 const app = express();
 app.use(cors());
@@ -49,10 +46,17 @@ const users = [
   // Add additional users as needed
 ];
 
-// Define a Topic model
+app.get('/api/init', async (_req, res) => {
+  try {
+    await Topic.insertMany(defaultTopics);
+    res.json({ message: "Topics added" });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
 
 // API endpoint to get topics
-app.get('/api/topics', async (req, res) => {
+app.get('/api/topics', async (_req, res) => {
   try {
     const topics = await Topic.find();
     res.json(topics);
@@ -96,6 +100,30 @@ app.post('/api/login', async (req, res) => {
     res.status(500).send(error);
   }
 });
+
+app.post('/api/chat', async (req, res) => {
+    const { message } = req.body;
+    try {
+      const chatCompletion = await openai.chat.completions.create({
+          messages: [
+              { role: "system", content: SystemPrompt },
+              { role: "user", content: message }
+          ],
+          model: "gpt-3.5-turbo-1106",
+      });
+      const response = chatCompletion.choices[0].message.content;
+
+      res.json({ response });
+
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error });
+    }
+});
+
+app.get('/api/ping', (_req, res) => {
+  res.send('pong');
+})
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

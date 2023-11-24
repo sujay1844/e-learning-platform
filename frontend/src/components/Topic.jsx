@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import VideoPlayer from './VideoPlayer.jsx';
+import ChatBot from './ChatBot.jsx';
 
 const TopicPage = () => {
   const [topic, setTopic] = useState({});
@@ -9,7 +10,7 @@ const TopicPage = () => {
   const { topicName } = useParams();
 
   useEffect(() => {
-    fetch(`http://backend:5000/api/topic/${topicName}`)
+    fetch(`http://${import.meta.env.BACKEND_URL || 'localhost:5000'}/api/topic/${topicName}`)
         .then((resp) => resp.json())
       .then((response) => {
         setTopic(response);
@@ -28,6 +29,7 @@ const TopicPage = () => {
     <div>
       <h1>{topic.name}</h1>
       <VideoPlayer url={topic.url} />
+      <ChatBot />
     </div>
   );
 };

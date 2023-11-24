@@ -7,7 +7,7 @@ const LoginPage = () => {
     const handleLogin = (event) => {
         event.preventDefault();
         // Make a request to the backend to authenticate the user
-        fetch('http://backend:5000/api/login', {
+        fetch(`http://${import.meta.env.BACKEND_URL || 'localhost:5000'}/api/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password }),

@@ -4,11 +4,11 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "3000:3000"
+      - "5173:5173"
     environment:
-      - REACT_APP_BACKEND_URL=http://backend:5000
-    # depends_on:
-    #   - backend
+      BACKEND_URL: http://backend:5000
+    depends_on:
+      - backend
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -19,7 +19,8 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - MONGO_URI=mongodb://mongo:27017/topicsDB
+      MONGO_URI: mongodb://mongo:27017/topicsDB
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
     depends_on:
       - mongo
     volumes:
@@ -30,8 +31,10 @@ services:
     image: mongodb/mongodb-community-server:latest
     ports:
       - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: topicsDB
     volumes:
-      - mongo-db:/data/db
+      - mongodb_data:/data/db
 
 volumes:
-  mongo-db:
+  mongodb_data:
