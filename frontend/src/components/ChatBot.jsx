@@ -1,11 +1,4 @@
 import { useState } from "react";
-import OpenAI from "openai";
-
-const SystemPrompt = `
-You're a knowledgeable tutor specialized in various subjects.
-Respond to user inquiries with comprehensive and accurate information related to their academic queries.
-Be concise and informative to assist them effectively in their studies.
-`;
 
 export default function ChatBot() {
     const [response, setResponse] = useState([]);
