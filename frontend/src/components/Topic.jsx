@@ -11,7 +11,7 @@ const TopicPage = () => {
 
   useEffect(() => {
     fetch(`http://${import.meta.env.BACKEND_URL || 'localhost:5000'}/api/topic/${topicName}`)
-        .then((resp) => resp.json())
+      .then((resp) => resp.json())
       .then((response) => {
         setTopic(response);
         setIsLoading(false);
@@ -22,12 +22,12 @@ const TopicPage = () => {
   }, [topicName]);
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <p style={{ textAlign: 'center', margin: '50px auto', color: '#666', fontSize: '18px' }}>Loading...</p>;
   }
 
   return (
-    <div>
-      <h1>{topic.name}</h1>
+    <div style={{ textAlign: 'center', margin: '50px auto', maxWidth: '800px' }}>
+      <h1 style={{ color: '#333', fontSize: '32px', marginBottom: '20px' }}>{topic.name}</h1>
       <VideoPlayer url={topic.url} />
       <ChatBot />
     </div>
@@ -35,3 +35,5 @@ const TopicPage = () => {
 };
 
 export default TopicPage;
+
+
