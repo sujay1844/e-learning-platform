@@ -14,14 +14,18 @@ const TopicsPage = () => {
         console.error('Error fetching topics:', error);
       });
   }, []);
-
   return (
-    <div>
-      <h1>Select a Topic</h1>
-      <ul>
+    <div className="container mx-auto px-4 pt-6">
+      <h1 className="text-3xl font-semibold text-gray-800 mb-4">Select a Topic</h1>
+      <ul className="list-disc pl-5 space-y-3">
         {topics.map((topic, index) => (
-          <li key={index}>
-            <a href={`/topic/${topic.name}`}>{topic.name}</a>
+          <li key={index} className="bg-gray-100 rounded-md p-2 hover:bg-gray-200 transition">
+            <a
+              href={`/topic/${topic.name}`}
+              className="text-blue-600 hover:text-blue-800"
+            >
+              {topic.name}
+            </a>
           </li>
         ))}
       </ul>

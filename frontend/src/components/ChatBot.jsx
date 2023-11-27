@@ -28,14 +28,24 @@ export default function ChatBot() {
             });
         setResponse(response);
     }
+    
     return (
-        <div>
-            <h1>ChatBot</h1>
-            <form onSubmit={handleSubmit}>
-                <input type="text" name="message" />
-                <button type="submit">Send</button>
-            </form>
-            <p>{response}</p>
-        </div>
-    )
+    <div className="max-w-lg mx-auto my-10 p-6 bg-white rounded shadow">
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">ChatBot</h1>
+        <form onSubmit={handleSubmit} className="flex gap-2">
+            <input
+                type="text"
+                name="message"
+                className="flex-1 p-2 border-2 border-gray-200 rounded"
+            />
+            <button
+                type="submit"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+                Send
+            </button>
+        </form>
+        <p className="text-gray-600 mt-3">{response}</p>
+    </div>
+)
 }

@@ -24,12 +24,18 @@ const TopicPage = () => {
   if (isLoading) {
     return <p>Loading...</p>;
   }
-
   return (
-    <div>
-      <h1>{topic.name}</h1>
-      <VideoPlayer url={topic.url} />
-      <ChatBot />
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-4xl font-bold mb-6">{topic.name}</h1>
+      <div className='flex flex-row gap-8'>
+
+        <div className="mb-8">
+          <VideoPlayer url={topic.url} />
+        </div>
+        <div className="mt-8">
+          <ChatBot />
+        </div>
+      </div>
     </div>
   );
 };
